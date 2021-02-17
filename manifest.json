@@ -1,0 +1,13 @@
+{
+  "manifest_version": 2,
+  "name": "SymphoniCode",
+  "short_name": "SymphoniCode",
+  "version": "0.0.1",
+  "description": "Symphonic Orchestra drived by you code.",
+  "content_scripts": [
+    {
+      "matches": ["https://atcoder.jp/*/custom_test"],
+      "js": ["symphony.js"]
+    }
+  ]
+}
