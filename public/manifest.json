@@ -7,7 +7,7 @@
   "content_scripts": [
     {
       "matches": ["https://atcoder.jp/*/custom_test"],
-      "js": ["symphony.js"]
+      "js": ["js/symphony.js"]
     }
   ]
 }

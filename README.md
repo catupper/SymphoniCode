@@ -11,6 +11,10 @@ chrome://extensions/ の「パッケージ化されていない拡張機能を�
 
 ## その他
 
-超実装注
+超実装中
 
 何かあったらご連絡ください: [@catupper](https://twitter.com/catupper)
+
+## リポジトリのテンプレート
+
+本リポジトリのディレクトリ構成は [chrome-extension-typescript-starter](https://github.com/chibat/chrome-extension-typescript-starter) のテンプレートを元に作られました．
