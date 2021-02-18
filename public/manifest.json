@@ -15,5 +15,6 @@
       "js/background.js"
     ],
     "persistent": false
-  }
+  },
+  "permissions": [ "webNavigation", "https://atcoder.jp/*/custom_test*" ]
 }
