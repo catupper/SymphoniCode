@@ -12,9 +12,8 @@ script.appendChild(
         var sco = document.getElementById('source_code_phantom');
         sco.setAttribute('data-sourceCode', getSourceCode());
     }
-    (function sourceCodeSender () {   
-        setInterval("window.update_sco()", 1000);
-    })();`
+    document.body.addEventListener('keydown', event => window.update_sco())
+    `
   )
 );
 (document.body || document.head || document.documentElement).appendChild(
@@ -75,11 +74,11 @@ class CodeSupervisor {
    */
   run() {
     const self = this;
-    setInterval(function () {
+    document.body.addEventListener('keydown', (event) => {
       self.update(
         document.getElementById('source_code_phantom')?.dataset.sourcecode || ''
       );
-    }, 1000);
+    });
   }
 }
 
@@ -92,7 +91,7 @@ codeSupervisor.addCallbackFunc(
     states['strokes'] += Math.abs(newLength - oldLength);
     states['length'] = newLength;
     if (Math.floor(states['strokes'] / 5) - Math.floor(lastStroke / 5)) {
-      console.log('Length: ' + newLength + '\nStrokes: ' + states['strokes']);
+      chrome.runtime.sendMessage({ length: length }, () => {});
     }
   },
   function (states: States) {
