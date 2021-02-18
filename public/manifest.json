@@ -9,5 +9,9 @@
       "matches": ["https://atcoder.jp/*/custom_test*"],
       "js": ["js/symphony.js"]
     }
-  ]
+  ],
+  "background":{
+    "scripts": ["js/orchestra.js"],
+    "persistent": true
+  }
 }

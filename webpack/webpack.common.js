@@ -6,6 +6,7 @@ const srcDir = path.join(__dirname, "..", "src");
 module.exports = {
     entry: {
       symphony: path.join(srcDir, 'symphony.ts'),
+      orchestra: path.join(srcDir, 'orchestra.ts'),
     },
     output: {
         path: path.join(__dirname, "../dist/js"),
