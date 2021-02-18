@@ -69,6 +69,18 @@ class CodeSupervisor {
     if (initialization !== undefined) initialization(this.states);
     this.callbackFuncs.push(f);
   }
+
+  /**
+   * Run
+   */
+  run() {
+    const self = this;
+    setInterval(function () {
+      self.update(
+        document.getElementById('source_code_phantom')?.dataset.sourcecode || ''
+      );
+    }, 1000);
+  }
 }
 
 const codeSupervisor = new CodeSupervisor();
@@ -89,15 +101,4 @@ codeSupervisor.addCallbackFunc(
   }
 );
 
-const sco = document.getElementById('source_code_phantom');
-
-/**
- * patrol
- */
-function patrol() {
-  codeSupervisor.update(sco?.dataset.sourcecode || '');
-}
-
-window.onload = function () {
-  setInterval('(' + patrol + ')()', 1000);
-};
+codeSupervisor.run();
