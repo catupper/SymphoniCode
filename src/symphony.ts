@@ -1,27 +1,3 @@
-// / Ugly 黒魔術 to communicate with page's javascript...
-const sourceCodePhantom = document.createElement('div');
-sourceCodePhantom.setAttribute('id', 'source_code_phantom');
-sourceCodePhantom.setAttribute('data-sourccCode', '');
-(document.body || document.head || document.documentElement).appendChild(
-  sourceCodePhantom
-);
-const script = document.createElement('script');
-script.appendChild(
-  document.createTextNode(
-    `function update_sco () {
-        var sco = document.getElementById('source_code_phantom');
-        sco.setAttribute('data-sourceCode', getSourceCode());
-    }
-    (function sourceCodeSender () {   
-        setInterval("window.update_sco()", 1000);
-    })();`
-  )
-);
-(document.body || document.head || document.documentElement).appendChild(
-  script
-);
-// 黒魔術 done
-
 type States = { [key: string]: any };
 type CallBackFunction = (
   oldCode: string,
@@ -101,4 +77,25 @@ codeSupervisor.addCallbackFunc(
   }
 );
 
-codeSupervisor.run();
+// codeSupervisor.run();
+
+chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
+  switch (req.type) {
+    case 'sourceCode':
+      sendResponse(
+        [
+          ...document
+            .getElementsByClassName('btn-toggle-editor')[0]
+            .classList.values(),
+        ].includes('active')
+          ? (document.getElementsByClassName('plain-textarea')[0] as
+              | HTMLTextAreaElement
+              | undefined)?.value ?? ''
+          : document.getElementsByClassName('cm-variable')[0]?.innerHTML ?? ''
+      );
+      break;
+
+    default:
+      sendResponse(null);
+  }
+});
