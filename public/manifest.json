@@ -3,10 +3,10 @@
   "name": "SymphoniCode",
   "short_name": "SymphoniCode",
   "version": "0.0.1",
-  "description": "Symphonic Orchestra drived by you code.",
+  "description": "Symphonic Orchestra drived by your code.",
   "content_scripts": [
     {
-      "matches": ["https://atcoder.jp/*/custom_test"],
+      "matches": ["https://atcoder.jp/*/custom_test*"],
       "js": ["js/symphony.js"]
     }
   ]
