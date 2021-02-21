@@ -1,4 +1,4 @@
-import { CodeGetter } from './getSourceCode';
+import { getSourceCode } from './getSourceCode';
 
 export type States = { [key: string]: any };
 export type CallBackFunction = (
@@ -14,7 +14,6 @@ export class CodeSupervisor {
   code: string;
   states: States;
   callbackFuncs: CallBackFunction[];
-  codeGetter: CodeGetter;
   /**
    * Constructor
    */
@@ -22,7 +21,6 @@ export class CodeSupervisor {
     this.code = '';
     this.states = {};
     this.callbackFuncs = [];
-    this.codeGetter = CodeGetter.getInstance();
   }
 
   /**
@@ -55,7 +53,7 @@ export class CodeSupervisor {
   run() {
     const self = this;
     document.body.addEventListener('keydown', (event) => {
-      self.update(self.codeGetter.getSourceCode());
+      self.update(getSourceCode());
     });
   }
 }
