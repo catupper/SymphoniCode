@@ -79,6 +79,18 @@ codeSupervisor.addCallbackFunc(
 
 // codeSupervisor.run();
 
+const getCode = () => {
+  const lines = document.getElementsByClassName('CodeMirror-line');
+  const n = lines.length;
+
+  const code = new Array(n)
+    .fill('')
+    .map((_, i) => lines[i].textContent ?? '')
+    .join('\n');
+
+  return code;
+};
+
 chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
   switch (req.type) {
     case 'sourceCode':
@@ -91,7 +103,7 @@ chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
           ? (document.getElementsByClassName('plain-textarea')[0] as
               | HTMLTextAreaElement
               | undefined)?.value ?? ''
-          : document.getElementsByClassName('cm-variable')[0]?.innerHTML ?? ''
+          : getCode()
       );
       break;
 
