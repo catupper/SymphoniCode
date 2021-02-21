@@ -10,8 +10,11 @@
       "js": ["js/codingPhase.js"]
     }
   ],
-  "background":{
-    "scripts": ["js/vendor.js", "js/orchestra.js"],
+  "background": {
+    "scripts": [
+      "js/vendor.js", "js/orchestra.js", "js/atCoderDetector.js"
+    ],
     "persistent": true
-  }
+  },
+  "permissions": [ "webNavigation", "https://atcoder.jp/*/custom_test*" ]
 }
