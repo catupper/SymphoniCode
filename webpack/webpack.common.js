@@ -5,9 +5,8 @@ const srcDir = path.join(__dirname, '..', 'src');
 
 module.exports = {
   entry: {
-    symphony: path.join(srcDir, 'symphony.ts'),
-    background: path.join(srcDir, 'background.ts'),
     codingPhase: path.join(srcDir, 'content_scripts/codingPhase.ts'),
+    atCoderDetector: path.join(srcDir, 'background/atCoderDetector.ts'),
     orchestra: path.join(srcDir, 'background/orchestra.ts'),
   },
   output: {

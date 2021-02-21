@@ -12,7 +12,7 @@
   ],
   "background": {
     "scripts": [
-      "js/vendor.js", "js/orchestra.js", "js/background.js"
+      "js/vendor.js", "js/orchestra.js", "js/atCoderDetector.js"
     ],
     "persistent": true
   },
