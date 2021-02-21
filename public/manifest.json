@@ -7,14 +7,14 @@
   "content_scripts": [
     {
       "matches": ["https://atcoder.jp/*/custom_test*"],
-      "js": ["js/symphony.js"]
+      "js": ["js/codingPhase.js"]
     }
   ],
   "background": {
     "scripts": [
-      "js/background.js"
+      "js/vendor.js", "js/orchestra.js", "js/background.js"
     ],
-    "persistent": false
+    "persistent": true
   },
   "permissions": [ "webNavigation", "https://atcoder.jp/*/custom_test*" ]
 }

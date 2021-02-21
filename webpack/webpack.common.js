@@ -7,6 +7,8 @@ module.exports = {
   entry: {
     symphony: path.join(srcDir, 'symphony.ts'),
     background: path.join(srcDir, 'background.ts'),
+    codingPhase: path.join(srcDir, 'content_scripts/codingPhase.ts'),
+    orchestra: path.join(srcDir, 'background/orchestra.ts'),
   },
   output: {
     path: path.join(__dirname, '../dist/js'),
