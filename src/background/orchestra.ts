@@ -1,3 +1,5 @@
+import * as Tone from 'tone';
+
 // add audio tab to background page.
 const hitSound = document.createElement('audio');
 hitSound.setAttribute('id', 'player');
@@ -9,6 +11,9 @@ hitSound.setAttribute(
   hitSound
 );
 
+const synth = new Tone.Synth().toDestination();
+
 chrome.runtime.onMessage.addListener(function (request, sender, sendResonse) {
-  hitSound.play();
+  synth.triggerAttackRelease('C4', '8n');
+  console.log('tone');
 });

@@ -11,7 +11,7 @@
     }
   ],
   "background":{
-    "scripts": ["js/orchestra.js"],
+    "scripts": ["js/vendor.js", "js/orchestra.js"],
     "persistent": true
   }
 }
