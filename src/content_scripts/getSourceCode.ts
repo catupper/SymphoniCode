@@ -1,48 +1,29 @@
 /**
- * codeGetter
- * THIS IS A SINGLETON
+ * getSourceCode
+ * @return {string} sourceCode
  */
-export class CodeGetter {
-  private static instance: CodeGetter;
+export const getSourceCode = (): string => {
+  const isPlain = [
+    ...document
+      .getElementsByClassName('btn-toggle-editor')[0]
+      .classList.values(),
+  ].includes('active');
 
-  /**
-   * getInstance
-   * @return {CodeGetter} The unique CodeGetter instance
-   */
-  static getInstance() {
-    if (!CodeGetter.instance) {
-      CodeGetter.instance = new CodeGetter();
-    }
-    return CodeGetter.instance;
+  if (isPlain) {
+    return (
+      (document.getElementsByClassName('plain-textarea')[0] as
+        | HTMLTextAreaElement
+        | undefined)?.value ?? ''
+    );
   }
 
-  /**
-   * getSourceCode
-   * @return {string} sourceCode
-   */
-  getSourceCode() {
-    const isPlain = [
-      ...document
-        .getElementsByClassName('btn-toggle-editor')[0]
-        .classList.values(),
-    ].includes('active');
+  const lines = document.getElementsByClassName('CodeMirror-line');
+  const n = lines.length;
 
-    if (isPlain) {
-      return (
-        (document.getElementsByClassName('plain-textarea')[0] as
-          | HTMLTextAreaElement
-          | undefined)?.value ?? ''
-      );
-    }
+  const code = new Array(n)
+    .fill('')
+    .map((_, i) => lines[i].textContent ?? '')
+    .join('\n');
 
-    const lines = document.getElementsByClassName('CodeMirror-line');
-    const n = lines.length;
-
-    const code = new Array(n)
-      .fill('')
-      .map((_, i) => lines[i].textContent ?? '')
-      .join('\n');
-
-    return code;
-  }
-}
+  return code;
+};
