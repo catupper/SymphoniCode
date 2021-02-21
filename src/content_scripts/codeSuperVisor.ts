@@ -30,7 +30,6 @@ export class CodeSupervisor {
    * @param {string} sourceCode: latest sourcecode
    */
   update(sourceCode: string) {
-    console.log(sourceCode);
     for (const f of this.callbackFuncs) {
       f(this.code, sourceCode, this.states);
     }
