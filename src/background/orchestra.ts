@@ -11,5 +11,4 @@ hitSound.setAttribute(
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResonse) {
   hitSound.play();
-  console.log(request.length);
 });
