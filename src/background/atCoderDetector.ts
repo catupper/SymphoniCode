@@ -4,19 +4,7 @@ chrome.runtime.onInstalled.addListener(() => {
 
   chrome.webNavigation.onCompleted.addListener(
     (details) => {
-      setInterval(() => {
-        chrome.tabs.sendMessage(
-          details.tabId,
-          {
-            type: 'sourceCode',
-          },
-          (response) => {
-            console.log(response);
-          }
-        );
-      }, 1000);
-
-      console.log('loaded');
+      console.log('AtCoder loaded');
       console.log(details.tabId, details.url);
     },
     {
