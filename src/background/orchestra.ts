@@ -50,7 +50,6 @@ const states: DjStateSet<DjStateLabel> = {
     },
   },
 };
-const stateLength = Object.keys(states).length;
 
 /**
  * CodeStateManager
@@ -85,6 +84,7 @@ class CodeStateManager<DjState extends string> {
    * @return {DjState}: next state
    */
   noteUpDown(now: DjState) {
+    const stateLength = Object.keys(this.symphonicDj.states).length;
     if (this.codeLength % 2 == 0) {
       return ('' + ((parseInt(now) + 1) % stateLength)) as DjState;
     } else {
