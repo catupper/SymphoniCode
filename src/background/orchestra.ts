@@ -1,35 +1,56 @@
 import * as Tone from 'tone';
-import { SymphonicDj } from './symphonicDj';
+import { DjStateSet, SymphonicDj } from './symphonicDj';
 
 Tone.Transport.bpm.value = 120;
 const synth = new Tone.Synth().toDestination();
 
-type DjState = '0' | '1' | '2' | '3' | '4' | '5' | '6';
+type DjStateLabel = '0' | '1' | '2' | '3' | '4' | '5' | '6';
 
-const samples: Record<DjState, () => void> = {
-  '0': () => {
-    synth.triggerAttackRelease('D3', '4m');
+const states: DjStateSet<DjStateLabel> = {
+  '0': {
+    defaultNextState: '0',
+    initializer: () => {
+      synth.triggerAttackRelease('D3', '4m');
+    },
   },
-  '1': () => {
-    synth.triggerAttackRelease('F3', '4m');
+  '1': {
+    defaultNextState: '1',
+    initializer: () => {
+      synth.triggerAttackRelease('F3', '4m');
+    },
   },
-  '2': () => {
-    synth.triggerAttackRelease('A3', '4m');
+  '2': {
+    defaultNextState: '2',
+    initializer: () => {
+      synth.triggerAttackRelease('A3', '4m');
+    },
   },
-  '3': () => {
-    synth.triggerAttackRelease('C4', '4m');
+  '3': {
+    defaultNextState: '3',
+    initializer: () => {
+      synth.triggerAttackRelease('C4', '4m');
+    },
   },
-  '4': () => {
-    synth.triggerAttackRelease('E4', '4m');
+  '4': {
+    defaultNextState: '4',
+    initializer: () => {
+      synth.triggerAttackRelease('E4', '4m');
+    },
   },
-  '5': () => {
-    synth.triggerAttackRelease('G4', '4m');
+  '5': {
+    defaultNextState: '5',
+    initializer: () => {
+      synth.triggerAttackRelease('G4', '4m');
+    },
   },
-  '6': () => {
-    synth.triggerAttackRelease('B4', '4m');
+  '6': {
+    defaultNextState: '6',
+    initializer: () => {
+      synth.triggerAttackRelease('B4', '4m');
+    },
   },
 };
-const sampleLength = Object.keys(samples).length;
+const stateLength = Object.keys(states).length;
 
 /**
  * CodeStateManager
@@ -65,17 +86,17 @@ class CodeStateManager<DjState extends string> {
    */
   noteUpDown(now: DjState) {
     if (this.codeLength % 2 == 0) {
-      return ('' + ((parseInt(now) + 1) % sampleLength)) as DjState;
+      return ('' + ((parseInt(now) + 1) % stateLength)) as DjState;
     } else {
       return ('' +
-        ((parseInt(now) + sampleLength - 1) % sampleLength)) as DjState;
+        ((parseInt(now) + stateLength - 1) % stateLength)) as DjState;
     }
   }
 }
 
-const symphonicDj: SymphonicDj<DjState> = new SymphonicDj(
-  samples,
-  (now: DjState) => codeStateManager.noteUpDown(now),
+const symphonicDj: SymphonicDj<DjStateLabel> = new SymphonicDj(
+  states,
+  (now: DjStateLabel) => codeStateManager.noteUpDown(now),
   '3'
 );
 
