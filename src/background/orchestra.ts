@@ -4,7 +4,9 @@ import { SymphonicDj } from './symphonicDj';
 Tone.Transport.bpm.value = 120;
 const synth = new Tone.Synth().toDestination();
 
-const samples: { [state: string]: () => void } = {
+type DjState = '0' | '1' | '2' | '3' | '4' | '5' | '6';
+
+const samples: Record<DjState, () => void> = {
   '0': () => {
     synth.triggerAttackRelease('D3', '4m');
   },
@@ -28,30 +30,53 @@ const samples: { [state: string]: () => void } = {
   },
 };
 const sampleLength = Object.keys(samples).length;
-let codeLength: number = 0;
 
 /**
- * noteUpDown
- * codeLentghが偶数なら音を上げて，奇数なら音を下げる
- * @param {string} now: curent state
- * @return {string}: next state
+ * CodeStateManager
  */
-function noteUpDown(now: string) {
-  if (codeLength % 2 == 0) {
-    return '' + ((parseInt(now) + 1) % sampleLength);
-  } else {
-    return '' + ((parseInt(now) + sampleLength - 1) % sampleLength);
+class CodeStateManager<DjState extends string> {
+  codeLength: number;
+  symphonicDj: SymphonicDj<DjState>;
+  /**
+   * constructor
+   * @param {SymphonicDj} symphonicDj: DJを注入．
+   */
+  constructor(symphonicDj: SymphonicDj<DjState>) {
+    this.symphonicDj = symphonicDj;
+    this.codeLength = 0;
+    const self = this;
+    chrome.runtime.onMessage.addListener(function (
+      request,
+      sender,
+      sendResonse
+    ) {
+      if (!self.symphonicDj.started) {
+        self.symphonicDj.start();
+      }
+      self.codeLength = request['length'];
+    });
+  }
+
+  /**
+   * noteUpDown
+   * codeLentghが偶数なら音を上げて，奇数なら音を下げる
+   * @param {DjState} now: curent state
+   * @return {DjState}: next state
+   */
+  noteUpDown(now: DjState) {
+    if (this.codeLength % 2 == 0) {
+      return ('' + ((parseInt(now) + 1) % sampleLength)) as DjState;
+    } else {
+      return ('' +
+        ((parseInt(now) + sampleLength - 1) % sampleLength)) as DjState;
+    }
   }
 }
 
-const symphonicDj = new SymphonicDj(samples, noteUpDown, '3');
+const symphonicDj: SymphonicDj<DjState> = new SymphonicDj(
+  samples,
+  (now: DjState) => codeStateManager.noteUpDown(now),
+  '3'
+);
 
-let started: boolean = false;
-
-chrome.runtime.onMessage.addListener(function (request, sender, sendResonse) {
-  if (!started) {
-    symphonicDj.start();
-    started = true;
-  }
-  codeLength = request['length'];
-});
+const codeStateManager = new CodeStateManager(symphonicDj);

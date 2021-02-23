@@ -11,7 +11,7 @@ const checkCodeLength = function (
   const oldLength = states['length'];
   states['strokes'] += Math.abs(newLength - oldLength);
   states['length'] = newLength;
-  chrome.runtime.sendMessage({ length: length }, () => {});
+  chrome.runtime.sendMessage({ length: newLength }, () => {});
 };
 
 const initCodeLength = function (states: States) {
