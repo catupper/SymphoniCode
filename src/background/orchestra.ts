@@ -4,49 +4,55 @@ import { DjStateSet, SymphonicDj } from './symphonicDj';
 Tone.Transport.bpm.value = 120;
 const synth = new Tone.Synth().toDestination();
 
-type DjStateLabel = '0' | '1' | '2' | '3' | '4' | '5' | '6';
+type DjStateLabel = '0' | '1' | '2' | '3' | '4' | '5' | '6' | 'd';
 
 const states: DjStateSet<DjStateLabel> = {
   '0': {
-    defaultNextState: '0',
+    defaultNextState: 'd',
     initializer: () => {
       synth.triggerAttackRelease('D3', '4m');
     },
   },
   '1': {
-    defaultNextState: '1',
+    defaultNextState: 'd',
     initializer: () => {
       synth.triggerAttackRelease('F3', '4m');
     },
   },
   '2': {
-    defaultNextState: '2',
+    defaultNextState: 'd',
     initializer: () => {
       synth.triggerAttackRelease('A3', '4m');
     },
   },
   '3': {
-    defaultNextState: '3',
+    defaultNextState: 'd',
     initializer: () => {
       synth.triggerAttackRelease('C4', '4m');
     },
   },
   '4': {
-    defaultNextState: '4',
+    defaultNextState: 'd',
     initializer: () => {
       synth.triggerAttackRelease('E4', '4m');
     },
   },
   '5': {
-    defaultNextState: '5',
+    defaultNextState: 'd',
     initializer: () => {
       synth.triggerAttackRelease('G4', '4m');
     },
   },
   '6': {
-    defaultNextState: '6',
-    initializer: () => {
+    defaultNextState: 'd',
+    initializer: async () => {
       synth.triggerAttackRelease('B4', '4m');
+    },
+  },
+  d: {
+    defaultNextState: '3',
+    initializer: () => {
+      synth.triggerAttackRelease('C#4', '4m');
     },
   },
 };
@@ -54,14 +60,14 @@ const states: DjStateSet<DjStateLabel> = {
 /**
  * CodeStateManager
  */
-class CodeStateManager<DjState extends string> {
+class CodeStateManager<DjStateLabel extends string> {
   codeLength: number;
-  symphonicDj: SymphonicDj<DjState>;
+  symphonicDj: SymphonicDj<DjStateLabel>;
   /**
    * constructor
-   * @param {SymphonicDj} symphonicDj: DJを注入．
+   * @param {SymphonicDj} symphonicDj: Djを注入．
    */
-  constructor(symphonicDj: SymphonicDj<DjState>) {
+  constructor(symphonicDj: SymphonicDj<DjStateLabel>) {
     this.symphonicDj = symphonicDj;
     this.codeLength = 0;
     const self = this;
@@ -70,9 +76,7 @@ class CodeStateManager<DjState extends string> {
       sender,
       sendResonse
     ) {
-      if (!self.symphonicDj.started) {
-        self.symphonicDj.start();
-      }
+      self.symphonicDj.start();
       self.codeLength = request['length'];
     });
   }
@@ -80,16 +84,23 @@ class CodeStateManager<DjState extends string> {
   /**
    * noteUpDown
    * codeLentghが偶数なら音を上げて，奇数なら音を下げる
-   * @param {DjState} now: curent state
-   * @return {DjState}: next state
+   * @param {DjStateLabel} now: curent state
+   * @return {DjStateLabel}: next state
    */
-  noteUpDown(now: DjState) {
-    const stateLength = Object.keys(this.symphonicDj.states).length;
-    if (this.codeLength % 2 == 0) {
-      return ('' + ((parseInt(now) + 1) % stateLength)) as DjState;
+  async noteUpDown(now: DjStateLabel) {
+    const stateLength = 7;
+    if (now == 'd') {
+      return '3';
     } else {
-      return ('' +
-        ((parseInt(now) + stateLength - 1) % stateLength)) as DjState;
+      if (now == '5') {
+        await new Promise((resolve) => setTimeout(resolve, 5000));
+      }
+      if (this.codeLength % 2 == 0) {
+        return ('' + ((parseInt(now) + 1) % stateLength)) as DjStateLabel;
+      } else {
+        return ('' +
+          ((parseInt(now) + stateLength - 1) % stateLength)) as DjStateLabel;
+      }
     }
   }
 }

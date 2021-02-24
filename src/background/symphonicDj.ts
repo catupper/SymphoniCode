@@ -14,11 +14,10 @@ export type DjStateSet<DjStateLabel extends string> = Record<
  * SymphonicDj
  */
 export class SymphonicDj<DjStateLabel extends string> {
-  transitionCallback: (now: DjStateLabel) => DjStateLabel;
+  transitionCallback: (now: DjStateLabel) => Promise<DjStateLabel>;
   states: DjStateSet<DjStateLabel>;
   currentState: DjStateLabel;
   started: boolean;
-  timeout: boolean;
   /**
    * constructor
    * @param {{DjState: function}} states: 状態(string)を開始するときに実行する関数
@@ -27,14 +26,13 @@ export class SymphonicDj<DjStateLabel extends string> {
    */
   constructor(
     states: DjStateSet<DjStateLabel>,
-    transitionCallback: (now: DjStateLabel) => DjStateLabel,
+    transitionCallback: (now: DjStateLabel) => Promise<DjStateLabel>,
     initialState: DjStateLabel
   ) {
     this.states = states;
     this.transitionCallback = transitionCallback;
     this.currentState = initialState;
     this.started = false;
-    this.timeout = false;
   }
 
   /**
@@ -45,22 +43,37 @@ export class SymphonicDj<DjStateLabel extends string> {
     this.started = true;
     const self = this;
     // 4小節(4measures)ごとに一回 状態self.currentState に対応する関数を実行
-    Tone.Transport.scheduleRepeat(() => {
-      if (self.timeout)
-        self.currentState = self.states[self.currentState].defaultNextState;
-      self.states[self.currentState].initializer();
-    }, '4m');
+    Tone.Transport.scheduleRepeat(
+      () => {
+        self.states[self.currentState].initializer();
+      },
+      '4m',
+      Tone.Transport.nextSubdivision('4m')
+    );
 
     // 2小節目から開始して4小節ごとに一回 状態self.currentStateを次の状態にアップデート
     Tone.Transport.scheduleRepeat(
-      () => {
-        self.timeout = true;
-        self.currentState = self.transitionCallback(self.currentState);
-        self.timeout = false;
+      (time) => {
+        console.log(self.currentState);
+        Promise.race([
+          new Promise((resolve, reject) => {
+            resolve(self.transitionCallback(self.currentState));
+          }),
+          new Promise((resolve, reject) => {
+            setTimeout(
+              resolve,
+              Tone.Time('2m').toSeconds() * 1000 - 100,
+              self.states[self.currentState].defaultNextState
+            );
+          }),
+        ]).then((val) => {
+          console.log(['winner', val]);
+          self.currentState = val as DjStateLabel;
+        });
       },
       '4m',
-      '2m'
+      Tone.Transport.nextSubdivision('4m') + Tone.Time('2m').toSeconds()
     );
-    Tone.Transport.start();
+    if (Tone.Transport.state != 'started') Tone.Transport.start();
   }
 }
