@@ -1,7 +1,7 @@
 import * as Tone from 'tone';
 
-export type DjState<DjStateLable extends string> = {
-  defaultNextState: DjStateLable;
+export type DjState<DjStateLabel extends string> = {
+  defaultNextState: DjStateLabel;
   initializer: () => void;
 };
 
